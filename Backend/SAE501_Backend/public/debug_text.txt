@@ -1,0 +1,11 @@
+Commande Numéro 1 : Fournisseur
+Fournisseur Ecolia
+Pour Pharminnov
+123 Rue de la Rue, Paris
+Téléphone : 0123456789
+Liste à ajouter :
+Paracétamol (500mg): Le paracétamol aide à combattre la fièvre [Stock: 20] [Prix: 2.18]
+Paracétamol (1000mg): Le paracétamol aide à combattre la fièvre [Stock: 12] [Prix: 3.15]
+Ibuprofène (500mg): L'ibuprofène aide à réduire les maux de tête [Stock: 5] [Prix: 2]
+Monoprost (3mI): L’habitude de l'utiliser permet de réduire certains évènements [Stock: 4] [Prix: 4.34]
+Signature du Fournisseur Ecolia

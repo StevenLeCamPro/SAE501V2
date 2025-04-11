@@ -1,0 +1,17 @@
+@import "@fontsource/nunito"; /* Default import */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+.dashboard-btn {
+  @apply bg-emerald-600 text-white font-semibold text-xl xl:text-2xl text-center py-6 px-4 rounded-lg shadow-md transition-all duration-300 transform hover:bg-emerald-700 hover:scale-105 hover:shadow-lg;
+}
+
+
+.dashboard-btn:focus {
+  outline: none;
+  box-shadow: 0px 0px 10px rgba(16, 185, 129, 0.6);
+}
+

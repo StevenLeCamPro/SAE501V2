@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@fontsource/nunito": "^5.1.0",
+    "react-unity-webgl": "^9.8.0"
+  }
+}
