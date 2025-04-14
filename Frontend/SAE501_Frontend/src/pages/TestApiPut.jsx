@@ -14,6 +14,7 @@ function TestApiPut() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [birthDate, setBirthDate] = useState(""); // Nouvelle state pour la date de naissance
   const [databaseUser, setDatabaseUser] = useState([]);
   const { message, addFlashMessage } = useFlashMessage();
 
@@ -21,8 +22,8 @@ function TestApiPut() {
 
   const fetchUserList = async () => {
     try {
-      const user = await Api("user", "get", null, null);
-      setDatabaseUser(user);
+      const userList = await Api("user", "get", null, null);
+      setDatabaseUser(userList);
     } catch (error) {
       console.error(
         "Oups, il y a eu un problème lors de la récupération des utilisateurs:",
@@ -39,6 +40,8 @@ function TestApiPut() {
       setEmail(user.email);
       setPhone(user.phone);
       setAddress(user.address);
+      // Assumant que la date de naissance est stockée dans user.birthDate.date
+      setBirthDate(user.birthDate ? user.birthDate.date : "");
     }
   };
 
@@ -46,13 +49,12 @@ function TestApiPut() {
     const initializeData = async () => {
       await fetchUserList();
 
-    const role = useCheckRole(2);
-    if (role === 0) {
-      navigate("/login");
-    }else if (role === 1) {
-      navigate("/");
-
-    };
+      const role = useCheckRole(2);
+      if (role === 0) {
+        navigate("/login");
+      } else if (role === 1) {
+        navigate("/");
+      }
     };
 
     initializeData();
@@ -83,7 +85,6 @@ function TestApiPut() {
       addFlashMessage("Veuillez entrer votre email");
       return;
     }
-
     if (!phone.trim()) {
       addFlashMessage("Veuillez entrer votre numéro de téléphone");
       return;
@@ -96,15 +97,14 @@ function TestApiPut() {
     try {
       const result = await Api("user", "put", id, dataUser);
       console.log("API Response:", result);
-      if (result.email){
-        addFlashMessage(result.email || "Cet adresse email est déjà utilisée", result);
-
-      }else{
+      if (result.email) {
+        addFlashMessage(result.email || "Cette adresse email est déjà utilisée", result);
+      } else {
         addFlashMessage("L'utilisateur a bien été modifié");
       }
 
       setTimeout(() => {
-      navigate("/profil");
+        navigate("/profil");
       }, 2000);
     } catch (error) {
       console.error("Erreur pendant la modification de l'utilisateur :", error);
@@ -126,30 +126,29 @@ function TestApiPut() {
               className="mt-4 w-full border border-gray-300 rounded-md p-2"
             >
               <option value="">Choisissez l'utilisateur à modifier</option>
-              {databaseUser.map((user) => {
-                return (
-                  <option value={user.id} key={user.id}>
-                    {user.name} {user.firstName}
-                  </option>
-                );
-              })}
+              {databaseUser.map((user) => (
+                <option value={user.id} key={user.id}>
+                  {user.name} {user.firstName}
+                </option>
+              ))}
             </select>
           </form>
         </div>
       );
     }
+    return null;
   };
 
   return (
     <>
       <div className="bg-orange-100 min-h-screen flex flex-col lg:flex-row items-center justify-center">
-      {message && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white text-green-600 text-center p-5 font-semibold shadow-lg rounded-lg w-3/4 md:w-1/2 lg:w-1/3">
-      {message}
-      </div>
+        {message && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white text-green-600 text-center p-5 font-semibold shadow-lg rounded-lg w-3/4 md:w-1/2 lg:w-1/3">
+              {message}
             </div>
-                )}
+          </div>
+        )}
         <div
           className="bg-cover bg-center h-54 lg:py-14 relative w-full"
           style={{ backgroundImage: "url('/arriereplan.jpg')" }}
@@ -162,33 +161,31 @@ function TestApiPut() {
                   Modification de l'utilisateur
                 </h1>
                 <p className="mt-2 text-gray-500">
-                  Remplissez le formulaire ci-dessous pour modifier un
-                  utilisateur
+                  Remplissez le formulaire ci-dessous pour modifier un utilisateur
                 </p>
               </div>
               {selectAdmin()}
               <div className="mt-5">
-                <form
-                  onSubmit={handleSubmit}
-                  className="grid grid-cols-2 gap-6"
-                >
+                <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+                  {/* Nom */}
                   <div className="relative mt-6">
                     <input
                       type="text"
                       name="name"
                       value={name}
                       onChange={(e) => setname(e.target.value)}
-                      placeholder="name"
+                      placeholder="Nom"
                       className="peer mt-1 w-full border-b-2 border-gray-300 px-0 py-1 placeholder-transparent focus:border-gray-500 focus:outline-none"
                     />
                     <label
                       htmlFor="name"
-                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:pl-0 peer-focus:text-sm peer-focus:text-gray-800"
+                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:text-sm peer-focus:text-gray-800"
                     >
                       Nom
                     </label>
                   </div>
 
+                  {/* Prénom */}
                   <div className="relative mt-6">
                     <input
                       type="text"
@@ -199,12 +196,14 @@ function TestApiPut() {
                       className="peer mt-1 w-full border-b-2 border-gray-300 px-0 py-1 placeholder-transparent focus:border-gray-500 focus:outline-none"
                     />
                     <label
-                      htmlFor="name"
-                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:pl-0 peer-focus:text-sm peer-focus:text-gray-800"
+                      htmlFor="firstName"
+                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:text-sm peer-focus:text-gray-800"
                     >
                       Prénom
                     </label>
                   </div>
+
+                  {/* Email */}
                   <div className="relative mt-6">
                     <input
                       type="email"
@@ -216,11 +215,13 @@ function TestApiPut() {
                     />
                     <label
                       htmlFor="email"
-                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:pl-0 peer-focus:text-sm peer-focus:text-gray-800"
+                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:text-sm peer-focus:text-gray-800"
                     >
                       Email
                     </label>
                   </div>
+
+                  {/* N° de téléphone */}
                   <div className="relative mt-6">
                     <input
                       type="phone"
@@ -232,14 +233,16 @@ function TestApiPut() {
                     />
                     <label
                       htmlFor="phone"
-                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:pl-0 peer-focus:text-sm peer-focus:text-gray-800"
+                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:text-sm peer-focus:text-gray-800"
                     >
                       N° de téléphone
                     </label>
                   </div>
+
+                  {/* Adresse */}
                   <div className="relative mt-6">
                     <input
-                      type="address"
+                      type="text"
                       name="address"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
@@ -248,15 +251,33 @@ function TestApiPut() {
                     />
                     <label
                       htmlFor="address"
-                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:pl-0 peer-focus:text-sm peer-focus:text-gray-800"
+                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-800 opacity-75 transition-all duration-100 ease-in-out peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-0 peer-focus:text-sm peer-focus:text-gray-800"
                     >
                       Adresse
                     </label>
                   </div>
+                  
+                  <div className="relative mt-6">
+                    <input
+                      type="text"
+                      name="birthDate"
+                      value={birthDate ? new Date(birthDate).toLocaleDateString() : ""}
+                      disabled
+                      className="peer mt-1 w-full border-b-2 border-gray-200 bg-gray-100 px-0 py-1 text-gray-500 cursor-not-allowed"
+                    />
+                    <label
+                      htmlFor="birthDate"
+                      className="pointer-events-none absolute top-0 left-0 origin-left -translate-y-1/2 transform text-sm text-gray-700 opacity-75 transition-all duration-100 ease-in-out"
+                    >
+                      Date de naissance
+                    </label>
+                  </div>
+
+                  {/* Bouton de soumission */}
                   <div className="col-span-2 my-6 text-center">
                     <button
                       type="submit"
-                      className="w-1/2 rounded-md bg-emerald-600 px-3 py-4 text-white"
+                      className="w-1/2 rounded-md bg-emerald-600 px-3 py-4 text-white transition duration-300"
                     >
                       Modifier l'utilisateur
                     </button>

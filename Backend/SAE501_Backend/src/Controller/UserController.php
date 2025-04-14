@@ -33,7 +33,7 @@ class UserController extends AbstractController
                     'phone'=> $user->getPhone(),
                     'roles'=> $user->getRoles(),
                     'address'=> $user->getAddress(),
-
+                    'createdAt'=> $user->getCreatedAt(),
                 ];
             }, $users);
             return $this->json($data, Response::HTTP_OK);
@@ -59,6 +59,7 @@ class UserController extends AbstractController
                 'phone'=> $user->getPhone(),
                 'roles'=> $user->getRoles(),
                 'address'=> $user->getAddress(),
+                'createdAt'=> $user->getCreatedAt(),
             ];
             return $this->json([$data], Response::HTTP_OK);
         } else {

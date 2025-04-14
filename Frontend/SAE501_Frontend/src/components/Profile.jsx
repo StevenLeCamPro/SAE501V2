@@ -7,14 +7,14 @@ import { useFlashMessage } from "../context/FlashMessageContext";
 function Profile() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const {message, addFlashMessage} = useFlashMessage();
+  const { message, addFlashMessage } = useFlashMessage();
 
   useEffect(() => {
     const userCookie = Cookies.get("pharminnov_login");
     if (userCookie) {
       const { user_id } = JSON.parse(userCookie);
       fetchUser(user_id);
-    }else{
+    } else {
       navigate("/login");
     }
   }, []);
@@ -39,7 +39,6 @@ function Profile() {
     setTimeout(() => {
       navigate("/login");
     }, 2000);
-    
   };
 
   return (
@@ -47,26 +46,25 @@ function Profile() {
       className="min-h-screen bg-cover bg-center"
       style={{ backgroundImage: "url('/arriereplan.jpg')" }}
     >
-        {message && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div className="bg-white text-green-600 text-center p-5 font-semibold shadow-lg rounded-lg w-3/4 md:w-1/2 lg:w-1/3">
-      {message}
-      </div>
-            </div>
-                )}
+      {message && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white text-green-600 text-center p-5 font-semibold shadow-lg rounded-lg w-3/4 md:w-1/2 lg:w-1/3">
+            {message}
+          </div>
+        </div>
+      )}
+
       <div className="relative flex items-center justify-center min-h-screen">
-     
         <div className="absolute inset-0 bg-black opacity-65"></div>
         {user ? (
-          <div className="relative mx-auto max-w-md bg-white p-6 rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold text-center mb-4">
+          <div className="relative mx-auto max-w-md bg-white p-8 md:p-10 rounded-2xl shadow-2xl mt-36 mb-20 lg:mt-32 xl:mt-14 xl:mb-0">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-center mb-6 text-emerald-700">
               Profil de {user.firstName} {user.name}
             </h1>
-            <div className="flex flex-col items-center space-y-4">
-              {/* Avatar */}
-              <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center">
+            <div className="flex flex-col items-center space-y-6">
+              <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center shadow-inner">
                 <svg
-                  className="w-8 h-8 text-gray-500"
+                  className="w-10 h-10 text-gray-500"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -81,39 +79,43 @@ function Profile() {
                 </svg>
               </div>
 
-              {/* Informations */}
-              <div className="w-full">
-                <div className="flex justify-between border-b py-2">
-                  <span className="font-semibold">Email :</span>
-                  <span>{user.email}</span>
+              {/* Informations du profil */}
+              <div className="w-full space-y-3">
+                <div className="flex justify-between border-b pb-2">
+                  <span className="font-semibold text-gray-700">Email :</span>
+                  <span className="text-gray-600">{user.email}</span>
                 </div>
-                <div className="flex justify-between border-b py-2">
-                  <span className="font-semibold">Date de naissance :</span>
-                  <span>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="font-semibold text-gray-700">Date de naissance :</span>
+                  <span className="text-gray-600">
                     {new Date(user.birthDate.date).toLocaleDateString()}
                   </span>
                 </div>
-                <div className="flex justify-between border-b py-2">
-                  <span className="font-semibold">Adresse :</span>
-                  <span>{user.address}</span>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="font-semibold text-gray-700">Adresse :</span>
+                  <span className="text-gray-600">{user.address}</span>
                 </div>
-                <div className="flex justify-between border-b py-2">
-                  <span className="font-semibold">N° de Téléphone :</span>
-                  <span>{user.phone}</span>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="font-semibold text-gray-700">Téléphone :</span>
+                  <span className="text-gray-600">{user.phone}</span>
                 </div>
+                  <div className="flex justify-between border-b pb-2">
+                    <span className="font-semibold text-gray-700">Créé le :</span>
+                    <span className="text-gray-600">
+                      {new Date(user.createdAt.date).toLocaleDateString()}
+                    </span>
+                  </div>
               </div>
             </div>
-
-            {/* Boutons */}
-            <div className="flex flex-col sm:flex-row justify-between mt-6 space-y-4 sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col sm:flex-row justify-between mt-8 space-y-4 sm:space-y-0 sm:space-x-4">
               <NavLink
                 to={`/update?id=${user.id}`}
-                className="w-full sm:w-auto bg-emerald-500 text-white font-bold py-2 px-4 text-center rounded hover:bg-emerald-600 transition duration-300"
+                className="w-full sm:w-auto bg-emerald-500 text-white font-bold py-2 px-6 rounded-lg text-center hover:bg-emerald-600 transition-colors duration-300"
               >
                 Modifier mon profil
               </NavLink>
               <button
-                className="w-full sm:w-auto bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition duration-300"
+                className="w-full sm:w-auto bg-red-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-red-600 transition-colors duration-300"
                 onClick={logout}
               >
                 Déconnexion
@@ -121,7 +123,9 @@ function Profile() {
             </div>
           </div>
         ) : (
-          <p className="text-center text-gray-500 bg-white rounded-lg p-10">Chargement du profil...</p>
+          <p className="relative text-center text-gray-500 bg-white rounded-lg p-10">
+            Chargement du profil...
+          </p>
         )}
       </div>
     </div>

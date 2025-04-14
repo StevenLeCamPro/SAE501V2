@@ -56,7 +56,7 @@ function GetMeds() {
 
     return (
         <div className="bg-orange-100 pb-10">
-            <h1 className="text-center font-bold text-2xl py-10 xl:text-4xl">Liste des médicaments</h1>
+            <h1 className="text-center font-bold text-2xl py-10 xl:text-4xl pt-32">Liste des médicaments</h1>
             <div>
                 <select value={selectedCategorie} onChange={handleCategorieChange} className="ml-4 p-2 border rounded">
                     <option value="">Toutes les catégories</option>
@@ -70,25 +70,43 @@ function GetMeds() {
                     console.log(produit)
                     var imagePath = "http://127.0.0.1:8000" + produit.image;
                     return (
-                        <div className="border-2 border-emerald-600 rounded-md bg-white shadow-lg p-4 mb-8" key={index}>
-                            <div className="flex justify-center">
-                                <img src={imagePath} alt={produit.image} className="w-full h-auto xl:h-5/6 xl:w-5/6 rounded-lg" />
-                            </div>
-                            <div className="flex justify-between items-center xl:mb-4 px-4">
-                                <div>
-                                    <p className="font-bold text-lg xl:text-2xl">{produit.nom}</p>
-                                    <p className="text-base xl:text-xl">{produit.dosage}</p>
-                                </div>
-                                <div>
-                                    <p className="text-right font-bold text-lg xl:text-2xl">{produit.prix} €</p>
-                                    {produitStock(produit.stock)}
-                                </div>
-                            </div>
-                           
-                            <div className="text-center my-4 xl:mt-10">
-                                <button className="bg-emerald-600 text-white px-4 py-4 rounded-md text-base xl:text-2xl"><NavLink to={`/medsbyid?id=${produit.id}`}>Voir les détails</NavLink></button>
-                            </div>
+                        <div
+                        key={index}
+                        className="group relative rounded-xl overflow-hidden bg-gradient-to-br from-white to-gray-50 shadow-md hover:shadow-xl transition-shadow duration-300"
+                      >
+                        {/* Image produit */}
+                        <div className="relative h-48 md:h-64 xl:h-80">
+                          <img
+                            src={imagePath}
+                            alt={produit.image}
+                            className="object-cover w-full h-full transform transition-transform duration-300 group-hover:scale-105"
+                          />
+                          {/* Overlay décoratif */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-30 group-hover:opacity-40 transition-opacity duration-300"></div>
                         </div>
+                        {/* Contenu de la card */}
+                        <div className="p-4 md:p-6 xl:p-8">
+                          <div className="flex justify-between items-center">
+                            <div>
+                              <h2 className="text-xl md:text-2xl font-bold text-gray-800">{produit.nom}</h2>
+                              <p className="text-sm md:text-base text-gray-600">{produit.dosage}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xl md:text-2xl font-bold text-emerald-600">{produit.prix} €</p>
+                              {produitStock(produit.stock)}
+                            </div>
+                          </div>
+                          <div className="mt-4 text-center">
+                            <NavLink
+                              to={`/medsbyid?id=${produit.id}`}
+                              className="inline-block bg-emerald-600 text-white px-4 py-2 rounded-full text-sm md:text-base font-semibold transform transition-all duration-300 hover:bg-emerald-700 hover:scale-105"
+                            >
+                              Voir les détails
+                            </NavLink>
+                          </div>
+                        </div>
+                      </div>
+                      
                     );
                 })}
             </div>
