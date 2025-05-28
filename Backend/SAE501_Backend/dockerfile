@@ -1,24 +1,32 @@
-# Utilise une image PHP avec Composer
-FROM php:8.1-fpm
+# Utilisation de l'image officielle PHP avec Apache
+FROM php:8.2-apache
 
-# Installe les dépendances nécessaires, y compris Composer
+# Installation des extensions PHP nécessaires
 RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    git \
-    unzip \
-    && curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer
+    libpq-dev libzip-dev unzip \
+    && docker-php-ext-install pdo pdo_mysql zip
 
-# Définir le répertoire de travail
-WORKDIR /var/www
+# Installation de Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copier les fichiers du projet dans le container
+# Définition du répertoire de travail
+WORKDIR /var/www/html
+
+# Copie des fichiers du projet vers le conteneur
 COPY . .
 
-# Installer les dépendances
+# Installation des dépendances Symfony
 RUN composer install --no-dev --optimize-autoloader
 
-# Configurer le serveur web (si nécessaire)
+# Configuration des permissions
+RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public
+
+# Configuration d'Apache
+RUN a2enmod rewrite
+COPY ./docker/apache-config.conf /etc/apache2/sites-enabled/000-default.conf
+
+# Exposer le port utilisé par Apache
 EXPOSE 80
 
-CMD ["php", "-S", "0.0.0.0:80", "-t", "public"]
+# Commande de lancement du serveur
+CMD ["apache2-foreground"]
